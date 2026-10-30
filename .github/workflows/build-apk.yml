@@ -30,9 +30,11 @@ jobs:
         run: |
           unzip -q Narendra_AppLock_Phone_Build_Ready.zip -d project
 
-      - name: Build APK
+      - name: Enable AndroidX and Build APK
         run: |
           cd project/NarendraAppLock
+          echo "android.useAndroidX=true" >> gradle.properties
+          echo "android.enableJetifier=true" >> gradle.properties
           gradle assembleDebug
 
       - name: Upload APK
@@ -41,3 +43,4 @@ jobs:
           name: Narendra-AppLock-APK
           path: project/NarendraAppLock/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
+          
