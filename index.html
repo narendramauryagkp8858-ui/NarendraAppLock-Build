@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Narendra App Lock - by Narendra Maurya</title>
+  <meta name="theme-color" content="#070b14" />
+  <meta name="description" content="Professional Android App Lock with PIN, Fingerprint, and App Management by Narendra Maurya." />
+  
+  <style>
+    /* Narendra App Lock - Ultra High-Performance Security Theme */
+    :root {
+      --bg-dark: #070b14;
+      --card-dark: #0d1527;
+      --card-border: #1e293b;
+      --primary: #00d2ff;
+      --primary-dark: #0066ff;
+      --accent: #10b981;
+      --danger: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    /* Subtle background ambient lights */
+    .ambient-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 20% 15%, rgba(0, 102, 255, 0.15), transparent 45%),
+                  radial-gradient(circle at 80% 85%, rgba(0, 210, 255, 0.12), transparent 50%);
+      z-index: 0;
+    }
+    .app-container {
+      position: relative;
+      z-index: 10;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    header {
+      background: rgba(13, 21, 39, 0.85);
+      border: 1px solid rgba(0, 210, 255, 0.25);
+      border-radius: 20px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(12px);
+      margin-bottom: 14px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(0, 210, 255, 0.35);
+    }
+    .brand-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: none;
+      stroke: #fff;
+      stroke-width: 2.2;
+    }
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .brand-badge {
+      background: rgba(0, 210, 255, 0.15);
+      border: 1px solid rgba(0, 210, 255, 0.4);
+      color: var(--primary);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+    .brand-dev {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .brand-dev span {
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .btn {
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid #334155;
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .btn:hover {
+      background: #334155;
+      transform: translateY(-1px);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #10b981, #00d2ff);
+      color: #070b14;
+      border: none;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(0, 210, 255, 0.3);
+    }
+    .btn-primary:hover {
+      filter: brightness(1.1);
+    }
+    .notice-bar {
+      background: rgba(0, 102, 255, 0.12);
+      border: 1px solid rgba(0, 210, 255, 0.25);
+      border-radius: 14px;
+      padding: 8px 14px;
+      margin-bottom: 14px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .notice-bar strong {
+      color: var(--primary);
+      background: #000;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-family: monospace;
+    }
+
+    /* Main Grid */
+    .workspace {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 16px;
+      flex: 1;
+    }
+    @media (max-width: 900px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Dashboard Panel */
+    .panel {
+      background: rgba(13, 21, 39, 0.7);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      backdrop-filter: blur(10px);
+    }
+    .status-card {
+      background: linear-gradient(135deg, rgba(0, 102, 255, 0.2), rgba(0, 210, 255, 0.08));
+      border: 1px solid rgba(0, 210, 255, 0.3);
+      border-radius: 18px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .status-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .shield-icon-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: #000;
+      border: 1px solid var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+    }
+    .status-info h3 {
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .status-info p {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .search-input {
+      flex: 1;
+      min-width: 140px;
+      background: #070b14;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 8px 12px;
+      color: #fff;
+      font-size: 12px;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--primary);
+    }
+    .apps-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      max-height: 480px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    @media (max-width: 600px) {
+      .apps-list {
+        grid-template-columns: 1fr;
+      }
+    }
+    .app-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+    .app-card.locked {
+      border-color: rgba(0, 210, 255, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+      box-shadow: 0 0 12px rgba(0, 210, 255, 0.08);
+    }
+    .app-info-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .app-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .app-meta {
+      min-width: 0;
+    }
+    .app-name {
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .app-pkg {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-family: monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .toggle-switch {
+      width: 44px;
+      height: 24px;
+      background: #334155;
+      border-radius: 20px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.25s ease;
+      flex-shrink: 0;
+    }
+    .toggle-switch.active {
+      background: var(--primary);
+    }
+    .toggle-knob {
+      width: 18px;
+      height: 18px;
+      background: #000;
+      border-radius: 50%;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      transition: transform 0.25s ease;
+    }
+    .toggle-switch.active .toggle-knob {
+      transform: translateX(20px);
+      background: #070b14;
+    }
+
+    /* Phone Simulator Frame */
+    .phone-simulator-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .phone-device {
+      width: 320px;
+      height: 640px;
+      background: #000;
+      border-radius: 46px;
+      border: 5px solid #1e293b;
+      box-shadow: 0 20px 60px rgba(0, 102, 255, 0.25), inset 0 0 0 2px #070b14;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    .phone-status-bar {
+      padding: 10px 18px 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+    .phone-notch {
+      width: 70px;
+      height: 14px;
+      background: #000;
+      border-radius: 10px;
+      border: 1px solid #1e293b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .phone-lens {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+    .phone-screen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: linear-gradient(180deg, #090e1a 0%, #03060c 100%);
+      overflow: hidden;
+    }
+
+    /* Interactive Phone Home Grid */
+    .phone-home {
+      flex: 1;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+    }
+    .phone-clock {
+      text-align: center;
+      margin: 10px 0 16px;
+    }
+    .phone-clock h1 {
+      font-size: 38px;
+      font-weight: 200;
+      letter-spacing: -1px;
+      font-family: monospace;
+    }
+    .phone-clock p {
+      font-size: 11px;
+      color: var(--primary);
+    }
+    .phone-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px 6px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .sim-app-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      text-align: center;
+    }
+    .sim-app-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #fff;
+      font-size: 15px;
+      position: relative;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+      transition: transform 0.15s ease;
+    }
+    .sim-app-icon:hover .sim-app-box {
+      transform: scale(1.08);
+    }
+    .sim-lock-badge {
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      background: var(--primary);
+      color: #000;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      border: 1px solid #000;
+    }
+    .sim-app-label {
+      font-size: 10px;
+      margin-top: 4px;
+      color: #cbd5e1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 58px;
+    }
+
+    /* Lock Screen Overlay on Phone */
+    .lock-screen-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 20%, #0f1c3f, #050811);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 16px 14px;
+      z-index: 50;
+      animation: fadeIn 0.2s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.97); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .lock-header {
+      text-align: center;
+    }
+    .lock-shield-box {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      border-radius: 16px;
+      margin: 0 auto 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(0, 210, 255, 0.35);
+    }
+    .lock-title {
+      font-size: 15px;
+      font-weight: 800;
+    }
+    .lock-subtitle {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .pin-dots-container {
+      display: flex;
+      gap: 12px;
+      margin: 12px 0 6px;
+    }
+    .pin-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid #475569;
+      background: #0f172a;
+      transition: all 0.2s;
+    }
+    .pin-dot.filled {
+      background: var(--primary);
+      border-color: var(--primary);
+      box-shadow: 0 0 10px var(--primary);
+      transform: scale(1.15);
+    }
+    .error-shake {
+      animation: shake 0.4s ease-in-out;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+    .keypad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      width: 100%;
+      max-width: 230px;
+    }
+    .keypad-btn {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid #1e293b;
+      color: #fff;
+      height: 52px;
+      border-radius: 16px;
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .keypad-btn:active {
+      transform: scale(0.92);
+      background: var(--primary);
+      color: #000;
+    }
+    .lock-footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .forgot-link {
+      color: var(--primary);
+      font-size: 11px;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .dev-tag {
+      font-size: 9px;
+      color: #64748b;
+      letter-spacing: 0.5px;
+    }
+
+    /* Modal Styling */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.show {
+      display: flex;
+    }
+    .modal-content {
+      background: #0d1527;
+      border: 1px solid rgba(0, 210, 255, 0.3);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 480px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 10px;
+    }
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 22px;
+      cursor: pointer;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .form-input {
+      background: #070b14;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: var(--primary);
+    }
+  </style>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
+<body>
+  <div class="ambient-bg"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header>
+      <div class="brand-wrap">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        </div>
+        <div>
+          <div class="brand-title">
+            Narendra App Lock <span class="brand-badge">APK Ready</span>
+          </div>
+          <div class="brand-dev">
+            Developer: <span>Narendra Maurya</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn btn-primary" onclick="openAddAppModal()">
+          + नया ऐप जोड़ें
+        </button>
+        <button class="btn" onclick="openPinModal()">
+          PIN बदलें
+        </button>
+        <button class="btn" onclick="toggleMasterProtection()" id="masterShieldBtn">
+          🛡️ सुरक्षा: चालू
+        </button>
+      </div>
+    </header>
+
+    <!-- Notification Bar -->
+    <div class="notice-bar">
+      <div>
+        ⚡ डिफ़ॉल्ट परीक्षण PIN: <strong>1234</strong> (किसी भी Locked 🔒 ऐप पर क्लिक करके लाइव टेस्ट करें)
+      </div>
+      <div>
+        डेवलपर संपर्क: <span style="color:var(--primary)">narendramauryagkp@gmail.com</span>
+      </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="workspace">
+      <!-- Left Dashboard Panel -->
+      <div class="panel">
+        <div class="status-card">
+          <div class="status-left">
+            <div class="shield-icon-badge">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </div>
+            <div class="status-info">
+              <h3 id="statusHeading">सक्रिय सुरक्षा (Protection Active)</h3>
+              <p id="lockedSummary">कुल 6 ऐप्स लॉक हैं • फिंगरप्रिंट अनलॉक चालू</p>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="openAddAppModal()">
+            + Add App
+          </button>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="filter-bar">
+          <input type="text" id="searchAppsInput" class="search-input" placeholder="ऐप खोजें (WhatsApp, Gallery, PhonePe...)" oninput="filterApps()" />
+          <button class="btn" onclick="lockAllApps()">सभी लॉक करें</button>
+          <button class="btn" onclick="unlockAllApps()">सभी अनलॉक करें</button>
+        </div>
+
+        <!-- Apps List -->
+        <div class="apps-list" id="appsListContainer">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- Right Phone Simulator -->
+      <div class="phone-simulator-wrap">
+        <div class="phone-device">
+          <!-- Status Bar -->
+          <div class="phone-status-bar">
+            <span>10:45</span>
+            <div class="phone-notch">
+              <div class="phone-lens"></div>
+            </div>
+            <span>5G 98%</span>
+          </div>
+
+          <!-- Phone Screen -->
+          <div class="phone-screen" id="phoneScreen">
+            <!-- Simulated Home -->
+            <div class="phone-home" id="phoneHome">
+              <div class="phone-clock">
+                <h1>10:45</h1>
+                <p>Narendra App Lock Protected</p>
+              </div>
+              <div class="phone-grid" id="simAppGrid">
+                <!-- App launcher icons inserted via JS -->
+              </div>
+            </div>
+
+            <!-- PIN Lock Screen Overlay -->
+            <div class="lock-screen-overlay" id="lockOverlay" style="display: none;">
+              <div class="lock-header">
+                <div class="lock-shield-box">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </div>
+                <div class="lock-title" id="lockedAppTitle">WhatsApp is Locked</div>
+                <div class="lock-subtitle">Narendra App Lock by Narendra Maurya</div>
+              </div>
+
+              <!-- Pin Dots -->
+              <div class="pin-dots-container" id="pinDots">
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+              </div>
+
+              <!-- Keypad -->
+              <div class="keypad-grid">
+                <button class="keypad-btn" onclick="pressDigit('1')">1</button>
+                <button class="keypad-btn" onclick="pressDigit('2')">2</button>
+                <button class="keypad-btn" onclick="pressDigit('3')">3</button>
+                <button class="keypad-btn" onclick="pressDigit('4')">4</button>
+                <button class="keypad-btn" onclick="pressDigit('5')">5</button>
+                <button class="keypad-btn" onclick="pressDigit('6')">6</button>
+                <button class="keypad-btn" onclick="pressDigit('7')">7</button>
+                <button class="keypad-btn" onclick="pressDigit('8')">8</button>
+                <button class="keypad-btn" onclick="pressDigit('9')">9</button>
+                <button class="keypad-btn" style="font-size:16px; color:var(--primary)" onclick="simulateFingerprint()">👆 Touch</button>
+                <button class="keypad-btn" onclick="pressDigit('0')">0</button>
+                <button class="keypad-btn" onclick="pressBackspace()">⌫</button>
+              </div>
+
+              <div class="lock-footer">
+                <span class="forgot-link" onclick="handleForgotPin()">पासवर्ड भूल गए? (Forgot PIN)</span>
+                <span class="dev-tag">DEVELOPED BY NARENDRA MAURYA</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add App Modal -->
+  <div class="modal-backdrop" id="addAppModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="font-size: 16px; font-weight: 700;">नया ऐप जोड़ें (Add App)</h3>
+        <button class="close-btn" onclick="closeAddAppModal()">&times;</button>
+      </div>
+
+      <p style="font-size: 11px; color: var(--text-muted);">
+        जो ऐप लिस्ट में नहीं हैं, उन्हें यहाँ से तुरंत जोड़कर लॉक कर सकते हैं:
+      </p>
+
+      <!-- Quick presets -->
+      <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
+        <button class="btn" style="font-size:11px" onclick="quickAddPreset('PhonePe', 'com.phonepe.app', '#4f46e5')">+ PhonePe</button>
+        <button class="btn" style="font-size:11px" onclick="quickAddPreset('Amazon', 'com.amazon.mShop', '#d97706')">+ Amazon</button>
+        <button class="btn" style="font-size:11px" onclick="quickAddPreset('Netflix', 'com.netflix.app', '#b91c1c')">+ Netflix</button>
+        <button class="btn" style="font-size:11px" onclick="quickAddPreset('BGMI', 'com.pubg.imobile', '#ca8a04')">+ BGMI</button>
+        <button class="btn" style="font-size:11px" onclick="quickAddPreset('Spotify', 'com.spotify.music', '#059669')">+ Spotify</button>
+        <button class="btn" style="font-size:11px" onclick="quickAddPreset('Discord', 'com.discord', '#6366f1')">+ Discord</button>
+      </div>
+
+      <div class="form-group">
+        <label>ऐप का नाम (App Name)</label>
+        <input type="text" id="customAppName" class="form-input" placeholder="उदा. My Bank App या Secret Diary" />
+      </div>
+
+      <div class="form-group">
+        <label>पैकेज नाम (Package Name)</label>
+        <input type="text" id="customAppPkg" class="form-input" placeholder="com.custom.app" />
+      </div>
+
+      <button class="btn btn-primary" style="padding:12px; margin-top:8px;" onclick="saveCustomApp()">
+        ऐप जोड़ें और लॉक करें (Add & Lock)
+      </button>
+    </div>
+  </div>
+
+  <!-- PIN Change Modal -->
+  <div class="modal-backdrop" id="pinModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="font-size: 16px; font-weight: 700;">नया PIN सेट करें</h3>
+        <button class="close-btn" onclick="closePinModal()">&times;</button>
+      </div>
+      <div class="form-group">
+        <label>वर्तमान PIN दर्ज करें (Current PIN):</label>
+        <input type="password" id="inputOldPin" maxlength="6" class="form-input" placeholder="••••" />
+      </div>
+      <div class="form-group">
+        <label>नया PIN (4 या 6 अंक):</label>
+        <input type="password" id="inputNewPin" maxlength="6" class="form-input" placeholder="••••" />
+      </div>
+      <button class="btn btn-primary" style="padding:12px; margin-top:8px;" onclick="saveNewPin()">
+        PIN सुरक्षित करें (Save PIN)
+      </button>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Narendra App Lock - Standalone Offline Engine
+     * Developer: Narendra Maurya
+     */
+    let currentMasterPin = localStorage.getItem('narendra_pin') || '1234';
+    let isMasterActive = localStorage.getItem('narendra_shield') !== 'false';
+    let currentInputPin = '';
+    let targetAppBeingUnlocked = null;
+
+    let apps = JSON.parse(localStorage.getItem('narendra_apps')) || [
+      { id: 'wa', name: 'WhatsApp', pkg: 'com.whatsapp', bg: '#10b981', locked: true },
+      { id: 'insta', name: 'Instagram', pkg: 'com.instagram.android', bg: '#ec4899', locked: true },
+      { id: 'gallery', name: 'Gallery', pkg: 'com.android.gallery', bg: '#f43f5e', locked: true },
+      { id: 'settings', name: 'Settings', pkg: 'com.android.settings', bg: '#475569', locked: true },
+      { id: 'paytm', name: 'Paytm UPI', pkg: 'net.one97.paytm', bg: '#0284c7', locked: true },
+      { id: 'chrome', name: 'Chrome', pkg: 'com.android.chrome', bg: '#f59e0b', locked: false },
+      { id: 'yt', name: 'YouTube', pkg: 'com.google.youtube', bg: '#dc2626', locked: false },
+      { id: 'files', name: 'Files', pkg: 'com.google.files', bg: '#2563eb', locked: true },
+      { id: 'contacts', name: 'Contacts', pkg: 'com.android.contacts', bg: '#059669', locked: false },
+      { id: 'camera', name: 'Camera', pkg: 'com.android.camera', bg: '#4f46e5', locked: false },
+    ];
+
+    // Sound Synthesizer via Web Audio API (Offline & lightweight)
+    let audioCtx = null;
+    function playBeep(freq = 440, type = 'sine', duration = 0.05) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function renderApps() {
+      const container = document.getElementById('appsListContainer');
+      const simGrid = document.getElementById('simAppGrid');
+      container.innerHTML = '';
+      simGrid.innerHTML = '';
+
+      const lockedCount = apps.filter(a => a.locked).length;
+      document.getElementById('lockedSummary').innerText = `कुल ${lockedCount} ऐप्स लॉक हैं • फिंगरप्रिंट अनलॉक चालू`;
+
+      apps.forEach(app => {
+        // Dashboard item
+        const card = document.createElement('div');
+        card.className = `app-card ${app.locked && isMasterActive ? 'locked' : ''}`;
+        card.innerHTML = `
+          <div class="app-info-wrap">
+            <div class="app-avatar" style="background:${app.bg}">${app.name.charAt(0)}</div>
+            <div class="app-meta">
+              <div class="app-name">${app.name}</div>
+              <div class="app-pkg">${app.pkg}</div>
+            </div>
+          </div>
+          <div class="toggle-switch ${app.locked && isMasterActive ? 'active' : ''}" onclick="toggleAppLock('${app.id}')">
+            <div class="toggle-knob"></div>
+          </div>
+        `;
+        container.appendChild(card);
+
+        // Simulator icon
+        const simIcon = document.createElement('div');
+        simIcon.className = 'sim-app-icon';
+        simIcon.onclick = () => launchSimApp(app);
+        simIcon.innerHTML = `
+          <div class="sim-app-box" style="background:${app.bg}">
+            ${app.name.charAt(0)}
+            ${app.locked && isMasterActive ? '<div class="sim-lock-badge">🔒</div>' : ''}
+          </div>
+          <div class="sim-app-label">${app.name}</div>
+        `;
+        simGrid.appendChild(simIcon);
+      });
+
+      localStorage.setItem('narendra_apps', JSON.stringify(apps));
+    }
+
+    function toggleAppLock(id) {
+      apps = apps.map(a => a.id === id ? { ...a, locked: !a.locked } : a);
+      playBeep(520);
+      renderApps();
+    }
+
+    function lockAllApps() {
+      apps = apps.map(a => ({ ...a, locked: true }));
+      playBeep(600);
+      renderApps();
+    }
+
+    function unlockAllApps() {
+      apps = apps.map(a => ({ ...a, locked: false }));
+      playBeep(300);
+      renderApps();
+    }
+
+    function toggleMasterProtection() {
+      isMasterActive = !isMasterActive;
+      localStorage.setItem('narendra_shield', isMasterActive);
+      const btn = document.getElementById('masterShieldBtn');
+      const heading = document.getElementById('statusHeading');
+      if (isMasterActive) {
+        btn.innerText = '🛡️ सुरक्षा: चालू';
+        heading.innerText = 'सक्रिय सुरक्षा (Protection Active)';
+      } else {
+        btn.innerText = '⚠️ सुरक्षा: बंद';
+        heading.innerText = 'सुरक्षा रोकी गई (Protection Paused)';
+      }
+      playBeep(480);
+      renderApps();
+    }
+
+    function filterApps() {
+      const q = document.getElementById('searchAppsInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.app-card');
+      cards.forEach((card, idx) => {
+        const app = apps[idx];
+        if (app.name.toLowerCase().includes(q) || app.pkg.toLowerCase().includes(q)) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Launch App in Phone Simulator
+    function launchSimApp(app) {
+      targetAppBeingUnlocked = app;
+      if (isMasterActive && app.locked) {
+        // Show lock screen
+        document.getElementById('lockedAppTitle').innerText = `${app.name} is Protected`;
+        document.getElementById('lockOverlay').style.display = 'flex';
+        currentInputPin = '';
+        updateDots();
+      } else {
+        // Unlocked direct
+        alert(`✅ ${app.name} सफलतापूर्वक खुल गया!\n(यह ऐप अनलॉक था या सुरक्षा बंद थी)`);
+      }
+    }
+
+    // Keypad Logic
+    function pressDigit(d) {
+      if (currentInputPin.length < 4) {
+        currentInputPin += d;
+        playBeep(440 + currentInputPin.length * 60);
+        updateDots();
+
+        if (currentInputPin.length === 4) {
+          verifyEnteredPin();
+        }
+      }
+    }
+
+    function pressBackspace() {
+      if (currentInputPin.length > 0) {
+        currentInputPin = currentInputPin.slice(0, -1);
+        playBeep(350);
+        updateDots();
+      }
+    }
+
+    function updateDots() {
+      const dots = document.querySelectorAll('.pin-dot');
+      dots.forEach((dot, idx) => {
+        if (idx < currentInputPin.length) {
+          dot.classList.add('filled');
+        } else {
+          dot.classList.remove('filled');
+        }
+      });
+    }
+
+    function verifyEnteredPin() {
+      if (currentInputPin === currentMasterPin) {
+        // Success
+        playBeep(880, 'triangle', 0.15);
+        setTimeout(() => {
+          document.getElementById('lockOverlay').style.display = 'none';
+          alert(`🎉 सत्यापन सफल!\n${targetAppBeingUnlocked ? targetAppBeingUnlocked.name : 'App'} अनलॉक हो गया!`);
+          currentInputPin = '';
+          updateDots();
+        }, 150);
+      } else {
+        // Error
+        playBeep(140, 'sawtooth', 0.25);
+        const dotsBox = document.getElementById('pinDots');
+        dotsBox.classList.add('error-shake');
+        setTimeout(() => {
+          dotsBox.classList.remove('error-shake');
+          currentInputPin = '';
+          updateDots();
+        }, 500);
+      }
+    }
+
+    function simulateFingerprint() {
+      playBeep(660, 'sine', 0.1);
+      setTimeout(() => {
+        playBeep(880, 'triangle', 0.2);
+        document.getElementById('lockOverlay').style.display = 'none';
+        alert(`👆 फिंगरप्रिंट प्रमाणित!\n${targetAppBeingUnlocked ? targetAppBeingUnlocked.name : 'App'} अनलॉक हो गया!`);
+      }, 300);
+    }
+
+    function handleForgotPin() {
+      const ans = prompt("सुरक्षा सत्यापन (Security Question):\nडेवलपर का नाम क्या है? (What is the developer name?)");
+      if (ans && ans.toLowerCase().includes('narendra')) {
+        const newPin = prompt("सत्यापन सफल! अपना नया 4-अंकीय PIN दर्ज करें:");
+        if (newPin && newPin.length >= 4) {
+          currentMasterPin = newPin;
+          localStorage.setItem('narendra_pin', newPin);
+          alert(`✅ नया PIN सेट हो गया: ${newPin}`);
+          document.getElementById('lockOverlay').style.display = 'none';
+        }
+      } else {
+        alert("❌ गलत उत्तर! PIN रीसेट नहीं किया जा सका।");
+      }
+    }
+
+    // Modals
+    function openAddAppModal() {
+      document.getElementById('addAppModal').classList.add('show');
+    }
+    function closeAddAppModal() {
+      document.getElementById('addAppModal').classList.remove('show');
+    }
+    function quickAddPreset(name, pkg, bg) {
+      apps.unshift({ id: 'app_' + Date.now(), name, pkg, bg, locked: true });
+      closeAddAppModal();
+      playBeep(520);
+      renderApps();
+    }
+    function saveCustomApp() {
+      const name = document.getElementById('customAppName').value.trim();
+      const pkg = document.getElementById('customAppPkg').value.trim() || 'com.app.' + name.toLowerCase().replace(/\\s/g, '');
+      if (!name) return alert('कृपया ऐप का नाम भरें!');
+      apps.unshift({ id: 'custom_' + Date.now(), name, pkg, bg: '#0284c7', locked: true });
+      closeAddAppModal();
+      document.getElementById('customAppName').value = '';
+      document.getElementById('customAppPkg').value = '';
+      playBeep(520);
+      renderApps();
+    }
+
+    function openPinModal() {
+      document.getElementById('pinModal').classList.add('show');
+    }
+    function closePinModal() {
+      document.getElementById('pinModal').classList.remove('show');
+    }
+    function saveNewPin() {
+      const oldPin = document.getElementById('inputOldPin').value;
+      const newPin = document.getElementById('inputNewPin').value;
+      if (oldPin !== currentMasterPin) {
+        return alert('वर्तमान PIN गलत है!');
+      }
+      if (!newPin || newPin.length < 4) {
+        return alert('नया PIN कम से कम 4 अंकों का होना चाहिए!');
+      }
+      currentMasterPin = newPin;
+      localStorage.setItem('narendra_pin', newPin);
+      alert('✅ नया PIN सुरक्षित हो गया!');
+      closePinModal();
+      document.getElementById('inputOldPin').value = '';
+      document.getElementById('inputNewPin').value = '';
+    }
+
+    // Initialize
+    renderApps();
+  </script>
+</body>
+</html>

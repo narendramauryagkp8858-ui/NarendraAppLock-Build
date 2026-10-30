@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Narendra App Lock</string>
+    <string name="developer_name">Narendra Maurya</string>
+    <string name="accessibility_service_description">Detects when a selected app comes to the foreground so Narendra App Lock can show its PIN screen.</string>
+</resources>

@@ -1,0 +1,18 @@
+<resources>
+    <style name="Theme.NarendraAppLock" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#3157D5</item>
+        <item name="colorPrimaryVariant">#233FA5</item>
+        <item name="colorSecondary">#03A9F4</item>
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">#172554</item>
+        <item name="android:navigationBarColor">#172554</item>
+    </style>
+    <style name="Theme.NarendraAppLock.Overlay" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#3157D5</item>
+        <item name="android:windowBackground">#101827</item>
+        <item name="android:statusBarColor">#101827</item>
+        <item name="android:navigationBarColor">#101827</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>
